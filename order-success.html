@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Order Confirmed | AlphaFit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark alpha-nav sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">AlphaFit</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto align-items-lg-center gap-lg-2">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Shop</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 nav-auth">
+                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-alpha" href="register.html">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="container py-5">
+            <div class="success-panel">
+                <p class="eyebrow">Order Confirmed</p>
+                <h1 id="success-name">Thanks!</h1>
+                <p id="success-message">Your AlphaFit order has been placed successfully.</p>
+                <div class="summary-total">
+                    <span>Paid</span>
+                    <strong id="success-total"></strong>
+                </div>
+                <a class="btn btn-alpha mt-4" href="index.html">Continue Shopping</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-4 mt-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+            <span>AlphaFit performance wear</span>
+            <span>Train harder. Move sharper.</span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const order = JSON.parse(localStorage.getItem('alphafit_last_order') || '{}');
+        if (order) {
+            document.getElementById('success-name').textContent = 'Thanks, ' + (order.full_name || 'Customer');
+            document.getElementById('success-message').textContent = 'Your AlphaFit order #' + (order.id || 'N/A') + ' has been placed successfully.';
+            document.getElementById('success-total').textContent = 'Rs. ' + (order.total || 0).toFixed(2);
+            localStorage.removeItem('alphafit_last_order');
+        } else {
+            document.getElementById('success-name').textContent = 'Thanks!';
+            document.getElementById('success-message').textContent = 'Your order has been placed successfully.';
+            document.getElementById('success-total').textContent = 'Rs. 0.00';
+        }
+    </script>
+</body>
+</html>

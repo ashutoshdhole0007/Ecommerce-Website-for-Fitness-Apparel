@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment | AlphaFit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark alpha-nav sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">AlphaFit</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto align-items-lg-center gap-lg-2">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Shop</a></li>
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2 nav-auth">
+                    <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+                    <li class="nav-item"><a class="btn btn-alpha" href="register.html">Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="container py-5">
+            <p class="eyebrow">Payment</p>
+            <h1 class="section-title mb-4">Choose payment method</h1>
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <form class="checkout-panel" id="payment-form">
+                        <div class="payment-options">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay-card" value="card" checked>
+                                <label class="form-check-label" for="pay-card">Credit or Debit Card</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay-upi" value="upi">
+                                <label class="form-check-label" for="pay-upi">UPI</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="payment_method" id="pay-cod" value="cod">
+                                <label class="form-check-label" for="pay-cod">Cash on Delivery</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-alpha btn-lg w-100 mt-3" type="submit">Pay Now</button>
+                    </form>
+                </div>
+                <div class="col-lg-5">
+                    <div class="checkout-panel">
+                        <h2 class="summary-title">Order Summary</h2>
+                        <div id="payment-summary"></div>
+                        <div class="summary-total">
+                            <span>Amount</span>
+                            <strong id="payment-total"></strong>
+                        </div>
+                        <p class="secure-note">This demo records your selected payment method and marks the order as paid.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-4 mt-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+            <span>AlphaFit performance wear</span>
+            <span>Train harder. Move sharper.</span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Load pending order and render
+        const order = JSON.parse(localStorage.getItem('alphafit_pending_order') || '{}');
+
+        if (!order.items || order.items.length === 0) {
+            document.querySelector('main').innerHTML = '<div class="container py-5"><div class="empty-state"><h3>No order found</h3><a class="btn btn-alpha" href="index.html">Shop Now</a></div></div>';
+        } else {
+            const summary = document.getElementById('payment-summary');
+            summary.innerHTML = order.items.map(item => `
+                <div class="summary-row">
+                    <span>${item.product.name} x ${item.quantity}</span>
+                    <strong>Rs. ${item.subtotal.toFixed(2)}</strong>
+                </div>
+            `).join('');
+
+            if (order.full_name) {
+                summary.innerHTML += `
+                    <p class="text-secondary mb-1">${order.full_name}</p>
+                    <p class="text-secondary">${order.address}, ${order.city} - ${order.pincode}</p>
+                `;
+            }
+
+            document.getElementById('payment-total').textContent = 'Rs. ' + order.total.toFixed(2);
+
+            // On payment submit, mark as paid and go to success
+            document.getElementById('payment-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+                const paidOrder = { ...order, payment_method: paymentMethod, status: 'paid', id: Math.floor(Math.random() * 10000) + 1 };
+                localStorage.setItem('alphafit_last_order', JSON.stringify(paidOrder));
+                localStorage.removeItem('alphafit_pending_order');
+                window.location.href = 'order-success.html';
+            });
+        }
+    </script>
+</body>
+</html>
